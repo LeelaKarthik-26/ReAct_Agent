@@ -151,3 +151,60 @@ def update_note_status(note_title: str, status: str) -> str:
 
     except Exception as e:
         return f"Error updating note status: {str(e)}"
+
+
+@tool
+def delete_note(note_title: str) -> str:
+    """
+    Delete (archive) a note from Notion by its title.
+    Searches for the note by title and archives it — Notion's equivalent of deletion.
+    The note will no longer appear in any views or queries.
+
+    Args:
+        note_title: The title/content of the note to delete (partial match supported).
+    """
+    api_key = os.getenv("NOTION_API_KEY")
+    db_id = os.getenv("NOTION_NOTES_DB_ID")
+
+    if not api_key or not db_id:
+        return "Error: Notion API Key or DB id not set"
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28"
+    }
+
+    # Step 1: Query the DB to find the page by note title
+    query_url = f"https://api.notion.com/v1/databases/{db_id}/query"
+    query_payload = {
+        "filter": {
+            "property": "Note",
+            "rich_text": {
+                "contains": note_title
+            }
+        }
+    }
+
+    try:
+        res = requests.post(query_url, headers=headers, json=query_payload)
+        res.raise_for_status()
+        results = res.json().get("results", [])
+
+        if not results:
+            return f"Error: No note found matching '{note_title}'"
+
+        # Use the first matching result
+        page_id = results[0]["id"]
+        title_list = results[0].get("properties", {}).get("Note", {}).get("title", [])
+        matched_title = title_list[0].get("text", {}).get("content", note_title) if title_list else note_title
+
+        # Step 2: Archive (delete) the page
+        patch_url = f"https://api.notion.com/v1/pages/{page_id}"
+        patch_res = requests.patch(patch_url, headers=headers, json={"archived": True})
+        patch_res.raise_for_status()
+
+        return f"Successfully deleted note: '{matched_title}'"
+
+    except Exception as e:
+        return f"Error deleting note: {str(e)}"
