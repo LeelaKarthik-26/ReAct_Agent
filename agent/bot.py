@@ -1,9 +1,9 @@
 import os
 from langchain_groq import ChatGroq
-from langchain.agents import create_agent
+from langgraph.prebuilt import create_react_agent
 
 from tools.weather import get_weather
-from tools.notion_notes import get_notes, add_note
+from tools.notion_notes import get_notes, add_note, update_note_status
 from tools.notion_calender import get_calendar_events, add_calendar_event
 from utils.logger import get_logger
 
@@ -28,11 +28,11 @@ def create_react_agent_custom():
     logger.info("Initializing Agent")
     llm = get_llm()
 
-    tools = [get_weather, get_notes, add_note, get_calendar_events, add_calendar_event]
+    tools = [get_weather, get_notes, add_note, update_note_status, get_calendar_events, add_calendar_event]
 
 
     try:
-        agent = create_agent(model=llm, tools=tools)
+        agent = create_react_agent(model=llm, tools=tools)
         logger.info("Agent Intialized")
         return agent
     
