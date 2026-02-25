@@ -67,7 +67,6 @@ jobs:
                     --name react_agent_container \
                     -p 8000:8000 \
                     --restart unless-stopped \
-                    -e GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}" \
                     -e GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" \
                     -e NOTION_API_KEY="${{ secrets.NOTION_API_KEY }}" \
                     -e NOTION_NOTES_DB_ID="${{ secrets.NOTION_NOTES_DB_ID }}" \
