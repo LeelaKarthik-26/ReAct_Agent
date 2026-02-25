@@ -60,7 +60,7 @@ jobs:
 
 
                 REPO_LOWER=$(echo "${{github.repository}}" | tr '[:upper:]' '[:lower:]')
-                IMAGE_TAG=ghcr.io/$REPO_LOWER:main
+                IMAGE_TAG=ghcr.io/$REPO_LOWER:${{github.ref_name}}
                 docker pull $IMAGE_TAG
 
                 docker run -d \
