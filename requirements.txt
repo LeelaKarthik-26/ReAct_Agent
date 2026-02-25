@@ -1,6 +1,6 @@
 langchain
 langgraph
-python_dotenv
+python-dotenv
 langchain_google_genai
 ipykernel
 langchain_groq
