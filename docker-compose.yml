@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-user}/react_agent:latest 
+    container_name: react_agent_container
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/app

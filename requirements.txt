@@ -5,3 +5,6 @@ python_dotenv
 langchain_google_genai
 ipykernel
 langchain_groq
+requests
+fastapi
+uvicorn
